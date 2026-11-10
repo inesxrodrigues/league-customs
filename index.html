@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Customs Balancer</title>
+<meta name="description" content="Split ten players into two even League of Legends custom teams by rank and role.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="style.css">
+<script src="config.js"></script>
+</head>
+<body>
+<main id="app"><p class="loading">Loading players…</p></main>
+
+<dialog id="gh" aria-labelledby="gh-title">
+  <form id="gh-form">
+    <h2 id="gh-title">Connect to GitHub</h2>
+    <p>Saving writes <code>players.json</code> straight to the repo, so you need a GitHub token that can write to it. The token is kept in this browser only.</p>
+    <div class="repofields" id="repo-fields">
+      <label for="gh-owner">Repo owner<input id="gh-owner" type="text" autocomplete="off" spellcheck="false" placeholder="your-github-name"></label>
+      <label for="gh-repo">Repo name<input id="gh-repo" type="text" autocomplete="off" spellcheck="false" placeholder="league-customs"></label>
+    </div>
+    <p class="note" id="repo-detected"></p>
+    <label for="gh-token">Token<input id="gh-token" type="password" autocomplete="off" spellcheck="false" placeholder="github_pat_…"></label>
+    <ol class="steps">
+      <li>Open <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">github.com/settings/personal-access-tokens/new</a>.</li>
+      <li>Under <b>Repository access</b> choose <b>Only select repositories</b> and pick this repo.</li>
+      <li>Under <b>Permissions</b> set <b>Contents</b> to <b>Read and write</b>.</li>
+      <li>Generate the token and paste it here.</li>
+    </ol>
+    <p class="note">Can't pick the repo in step 2? It belongs to someone else. The README explains how friends get write access.</p>
+    <div class="actions">
+      <button type="button" class="ghost" id="gh-forget">Forget token</button>
+      <span class="spacer"></span>
+      <button type="button" id="gh-cancel">Cancel</button>
+      <button type="submit" class="primary" id="gh-save">Save</button>
+    </div>
+  </form>
+</dialog>
+
+<script src="app.js"></script>
+</body>
+</html>
