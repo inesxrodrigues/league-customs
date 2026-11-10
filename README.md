@@ -39,6 +39,7 @@ Each person who wants to save creates their own token and pastes it into **Conne
 |---|---|
 | Each division | 100 (Iron IV = 0, Gold IV = 1,200, Diamond I = 2,700) |
 | Master / Grandmaster / Challenger | 2,800 / 3,200 / 3,600 |
+| "Rarely plays" ranked | +150 (their rank probably undersells them) |
 
 On a lane other than their main, a player counts for less:
 

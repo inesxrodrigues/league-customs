@@ -9,6 +9,7 @@
   var ROLES = ["Top", "Jungle", "Mid", "Bot", "Support"];
   var ABBR = { Top: "TOP", Jungle: "JGL", Mid: "MID", Bot: "BOT", Support: "SUP" };
   var PEN = { secondary: 100, third: 175, fill: 200, off: 250, never: 5000 };
+  var RARE_BONUS = 150; // players who rarely play ranked are likely better than their rank
   var MAIN_OPTS = ROLES.concat("Fill");
   var ALT_OPTS = ["None"].concat(ROLES, "Fill");
   var AVOID_OPTS = ["None"].concat(ROLES);
@@ -21,10 +22,10 @@
     ["Moth", "Silver", "I", "Support", "Bot", "Mid", "None"],
     ["Juno", "Platinum", "III", "Jungle", "Mid", "None", "None"],
     ["Pike", "Emerald", "II", "Bot", "Mid", "None", "None"],
-    ["Wren", "Bronze", "I", "Support", "Fill", "None", "None"],
+    ["Wren", "Bronze", "I", "Support", "Fill", "None", "None", true],
     ["Atlas", "Gold", "IV", "Fill", "None", "None", "Jungle"],
     ["Sable", "Platinum", "I", "Top", "Support", "None", "None"],
-    ["Kit", "Silver", "III", "Bot", "Support", "Mid", "Top"],
+    ["Kit", "Silver", "III", "Bot", "Support", "Mid", "Top", true],
     ["Orrin", "Emerald", "IV", "Jungle", "Top", "None", "None"]
   ];
 
@@ -88,7 +89,8 @@
       primary: oneOf(r.primary, MAIN_OPTS, "Fill"),
       secondary: oneOf(r.secondary, ALT_OPTS, "None"),
       third: oneOf(r.third, ALT_OPTS, "None"),
-      avoid: oneOf(r.avoid, AVOID_OPTS, "None")
+      avoid: oneOf(r.avoid, AVOID_OPTS, "None"),
+      rare: r.rare === true
     };
   }
   function toMap(data) {
@@ -124,10 +126,12 @@
   }
 
   // ===================== rating =====================
-  function rating(p) {
+  function rankRating(p) {
     if (APEX[p.tier] != null) return APEX[p.tier];
     return TIERS.indexOf(p.tier) * 400 + Math.max(0, DIVS.indexOf(p.div)) * 100;
   }
+  function rating(p) { return rankRating(p) + (p.rare ? RARE_BONUS : 0); }
+  function ratingText(p) { return fmt(rating(p)) + (p.rare ? " (+" + RARE_BONUS + ")" : ""); }
   function rankLabel(r) {
     if (r >= 3600) return "Challenger";
     if (r >= 3200) return "Grandmaster";
@@ -162,6 +166,7 @@
     if (p.third !== "None") parts.push(p.third);
     var s = playerRank(p) + " · " + parts.join(" / ");
     if (p.avoid !== "None") s += " · not " + p.avoid;
+    if (p.rare) s += " · rarely ranked";
     return s;
   }
 
@@ -441,7 +446,15 @@
   // ===================== lobby =====================
   function lobbyRow(entry) {
     var p = get(entry.id);
-    var ratingEl = h("span", { class: "rating num", text: fmt(rating(p)) });
+    var ratingEl = h("span", { class: "rating num", text: ratingText(p) });
+    var rareBtn = h("button", { type: "button", class: "raretoggle", id: "p-" + p.id + "-rare", "aria-pressed": p.rare ? "true" : "false",
+      title: "Turn on for players who rarely play ranked: their rank probably undersells them, so they count " + RARE_BONUS + " higher.",
+      onclick: function () {
+        p.rare = !p.rare;
+        rareBtn.setAttribute("aria-pressed", p.rare ? "true" : "false");
+        rareBtn.textContent = p.rare ? "Rarely plays" : "Plays often";
+        changed();
+      } }, p.rare ? "Rarely plays" : "Plays often");
     var divSel = sel("p-" + p.id + "-div", "Division", DIVS, p.div, function (v) { p.div = v; changed(); });
     divSel.disabled = APEX[p.tier] != null;
     divSel.classList.add("div");
@@ -450,7 +463,7 @@
     var unsavedChip = h("span", { class: "chip unsaved", text: "unsaved" });
     unsavedChip.hidden = !changes.upserts[p.id];
     function changed() {
-      ratingEl.textContent = fmt(rating(p));
+      ratingEl.textContent = ratingText(p);
       touch(p);
       unsavedChip.hidden = !changes.upserts[p.id];
       renderTeams();
@@ -477,7 +490,8 @@
         roleField("", "Main", "primary", MAIN_OPTS),
         roleField("", "2nd role", "secondary", ALT_OPTS),
         roleField("", "3rd role", "third", ALT_OPTS),
-        roleField("avoid", "Won't play", "avoid", AVOID_OPTS))
+        roleField("avoid", "Won't play", "avoid", AVOID_OPTS),
+        h("label", { class: "rare", for: "p-" + p.id + "-rare" }, "Ranked games", rareBtn))
     );
     return row;
   }
@@ -547,14 +561,14 @@
       lobby.length ? h("div", { class: "addrow" },
         h("button", { class: "ghost small", onclick: function () { lobby = []; examples = {}; current = null; persist(); renderAll(); } }, "Clear lobby")) : null,
       dbPanel(),
-      h("p", { class: "note", text: "Rating: each division is worth 100 (Iron IV = 0, Gold IV = 1,200, Diamond I = 2,700; Master 2,800, Grandmaster 3,200, Challenger 3,600). Second role costs 100, third role 175, fill 200, any other lane 250. A “won't play” lane is never assigned unless there is no other way to fill both teams." })
+      h("p", { class: "note", text: "Rating: each division is worth 100 (Iron IV = 0, Gold IV = 1,200, Diamond I = 2,700; Master 2,800, Grandmaster 3,200, Challenger 3,600). Second role costs 100, third role 175, fill 200, any other lane 250. A “won't play” lane is never assigned unless there is no other way to fill both teams. Players who rarely play ranked count " + RARE_BONUS + " higher, because their rank probably undersells them." })
     );
   }
 
   function makeExamples() {
     examples = {};
     EXAMPLES.forEach(function (x, i) {
-      var p = clean({ id: "ex" + (i + 1), name: "Example: " + x[0], tier: x[1], div: x[2], primary: x[3], secondary: x[4], third: x[5], avoid: x[6] });
+      var p = clean({ id: "ex" + (i + 1), name: "Example: " + x[0], tier: x[1], div: x[2], primary: x[3], secondary: x[4], third: x[5], avoid: x[6], rare: x[7] === true });
       examples[p.id] = p;
     });
   }
@@ -630,7 +644,7 @@
           : f === "off" ? h("span", { class: "chip offr", text: "off-role" }) : null;
         return h("div", { class: "slot", style: "--i:" + i },
           h("span", { class: "role", text: ABBR[s.role] }),
-          h("div", { class: "who" }, h("strong", { text: p.name || "Unnamed" }), h("span", { text: playerRank(p) })),
+          h("div", { class: "who" }, h("strong", { text: p.name || "Unnamed" }), h("span", { text: playerRank(p) + (p.rare ? " · rarely ranked" : "") })),
           chip);
       }),
       h("div", { class: "tfoot" }, h("span", { text: useRoles ? "Strength after roles" : "Total rating" }), h("span", { class: "num", text: fmt(sum) }))

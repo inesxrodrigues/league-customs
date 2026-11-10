@@ -123,7 +123,13 @@ input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--pink); m
 .prow .rating { text-align: right; font-size: 12px; color: var(--muted); }
 .prow .namecell { display: flex; align-items: center; gap: 6px; min-width: 0; }
 .prow .namecell input { flex: 1; width: 100%; font-weight: 700; }
-.prow .roles { grid-column: 2 / -1; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.prow .roles { grid-column: 2 / -1; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+.raretoggle { padding: 5px 8px; font-size: 13px; border-radius: 10px; box-shadow: 0 2px 0 var(--line); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.raretoggle[aria-pressed="true"] { background: color-mix(in srgb, var(--good) 18%, var(--panel-2)); border-color: var(--good); color: var(--good); box-shadow: 0 2px 0 color-mix(in srgb, var(--good) 50%, transparent); }
+@media (max-width: 1180px) and (min-width: 1000px), (max-width: 860px) {
+  .prow .roles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .prow .roles label.rare { grid-column: 1 / -1; }
+}
 .prow .roles label { display: flex; flex-direction: column; gap: 3px; font-size: 12px; font-family: var(--display); font-weight: 500; color: var(--muted); min-width: 0; }
 .prow .roles label.avoid { color: var(--bad); }
 .prow .roles select { width: 100%; }
@@ -137,7 +143,6 @@ input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--pink); m
   .prow .tier { grid-column: 2; }
   .prow .div { grid-column: 3; }
   .prow .rating { grid-column: 2 / 4; text-align: left; }
-  .prow .roles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 details.dbpanel { border-top: 2px dotted var(--line); padding-top: 14px; }
