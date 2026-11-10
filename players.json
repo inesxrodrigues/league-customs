@@ -1,4 +1,15 @@
 {
   "players": [
+    {"id":"pmwb0aefti7w5","name":"Caro","tier":"Bronze","div":"IV","primary":"Support","secondary":"Mid","third":"None","avoid":"Top","rare":true},
+    {"id":"pmwb0ac53iqnq","name":"Filip","tier":"Emerald","div":"II","primary":"Bot","secondary":"None","third":"None","avoid":"None","rare":false},
+    {"id":"pmwb0d9j9c7u5","name":"Ilyas","tier":"Emerald","div":"IV","primary":"Support","secondary":"None","third":"None","avoid":"None","rare":false},
+    {"id":"pmwb04gwy04u4","name":"Ines","tier":"Silver","div":"IV","primary":"Support","secondary":"Mid","third":"Bot","avoid":"None","rare":true},
+    {"id":"pmwb05n4cez74","name":"Jasmin","tier":"Emerald","div":"IV","primary":"Mid","secondary":"Support","third":"None","avoid":"Top","rare":false},
+    {"id":"pmwb05qeycgwu","name":"Jonas","tier":"Emerald","div":"IV","primary":"Jungle","secondary":"None","third":"None","avoid":"None","rare":false},
+    {"id":"pmwb09pfxgjtw","name":"Juli","tier":"Platinum","div":"IV","primary":"Support","secondary":"None","third":"None","avoid":"None","rare":false},
+    {"id":"pmwb0h1ju859f","name":"Ricardo","tier":"Gold","div":"IV","primary":"Jungle","secondary":"None","third":"None","avoid":"None","rare":true},
+    {"id":"pmwb0agmfkfqd","name":"Robin","tier":"Bronze","div":"II","primary":"Bot","secondary":"None","third":"None","avoid":"None","rare":true},
+    {"id":"pmwb052sk0sre","name":"Rodrigo","tier":"Bronze","div":"I","primary":"Bot","secondary":"Jungle","third":"Support","avoid":"None","rare":false},
+    {"id":"pmwb05rvv963r","name":"Tobi","tier":"Emerald","div":"II","primary":"Mid","secondary":"Top","third":"None","avoid":"None","rare":false}
   ]
 }
